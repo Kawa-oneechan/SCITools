@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
@@ -25,19 +25,30 @@ namespace Pic2SciFont
 
 			if (args.Length == 0)
 			{
-				Console.WriteLine("Need an input file, preferably PNG, and maybe an output file.");
+				Console.WriteLine("Need an input file -- an image (preferably PNG), or an SCI FON file -- and maybe an output file.");
 				return;
 			}
 			if (args.Length >= 1)
 			{
 				inFile = args[0];
-				outFile = Path.ChangeExtension(inFile, ".fon");
+				if (inFile.EndsWith(".fon", StringComparison.InvariantCultureIgnoreCase))
+					outFile = Path.ChangeExtension(inFile, ".png");
+				else
+					outFile = Path.ChangeExtension(inFile, ".fon");
 			}
 			if (args.Length >= 2)
 			{
 				outFile = args[1];
 			}
 
+			if (inFile.EndsWith(".fon", StringComparison.InvariantCultureIgnoreCase))
+				Font2Pic(inFile, outFile);
+			else
+				Pic2Font(inFile, outFile);
+		}
+
+		static void Pic2Font(string inFile, string outFile)
+		{
 			var sheet = new Bitmap(inFile);
 
 			var lineHeight = 0;
@@ -95,7 +106,6 @@ namespace Pic2SciFont
 					bytes.Add((byte)thisCellWidth);
 					bytes.Add((byte)thisCellHeight);
 
-					//var bytesPerLine = (thisCellWidth + 3) / 4 * 4;
 					var bytesToWrite = (thisCellWidth + 7) / 8;
 
 					for (var line = 0; line < thisCellHeight; line++)
@@ -158,6 +168,75 @@ namespace Pic2SciFont
 			}
 			fontFile.Flush();
 			fontFile.Close();
+		}
+
+		static void Font2Pic(string inFile, string outFile)
+		{
+			var fontFile = new BinaryReader(File.OpenRead(inFile));
+			var resHeader = fontFile.ReadInt16();
+			if (resHeader != 0x87)
+			{
+				Console.WriteLine("File is not an SCI Font resource.");
+				return;
+			}
+			var lowChar = fontFile.ReadInt16();
+			var highChar = fontFile.ReadInt16();
+			var lineHeight = fontFile.ReadInt16();
+			var numChars = highChar - lowChar;
+
+			//16384 ought to be big enough to cover my needs.
+			//Might have to notice we're out of height and try
+			//again at 32 characters per line.
+			var bigBitmap = new Bitmap(16384, 16384);
+			var g = Graphics.FromImage(bigBitmap);
+			g.Clear(Color.Silver);
+			var extentWidth = 32;
+			var extentHeight = 32;
+			g.FillRectangle(Brushes.White, 2, 2, 2, lineHeight);
+			g.DrawRectangle(Pens.Gray, 1, 1, 3, lineHeight + 1);
+
+			var left = 7;
+			var top = 2;
+			var maxHeight = 1;
+
+			for (var i = 0; i < numChars; i++)
+			{
+				fontFile.BaseStream.Seek(8 + (i * 2), SeekOrigin.Begin);
+				var offset = fontFile.ReadInt16();
+				fontFile.BaseStream.Seek(offset + 2, SeekOrigin.Begin);
+				var width = fontFile.ReadByte();
+				var height = fontFile.ReadByte();
+				if (height > maxHeight)
+					maxHeight = height;
+				var b = 0;
+				for (var line = 0; line < height; line++)
+				{
+					for (int done = 0; done < width; done++)
+					{
+						if ((done & 7) == 0)
+							b = fontFile.ReadByte();
+						bigBitmap.SetPixel(left + done, top + line, ((b & 0x80) == 0x80) ? Color.Black : Color.White);
+						b = (byte)(b << 1);
+					}
+				}
+				g.DrawRectangle(Pens.Gray, left - 1, top - 1, width + 1, height + 1);
+
+				left += width + 2;
+				if (i % 16 == 15)
+				{
+					if (left > extentWidth)
+						extentWidth = left + 0;
+					left = 7;
+					top += maxHeight + 2;
+					maxHeight = 1;
+				}
+			}
+			extentHeight = top + 1;
+
+			var smallBitmap = new Bitmap(extentWidth, extentHeight);
+			g = Graphics.FromImage(smallBitmap);
+			g.DrawImage(bigBitmap, 0, 0, new Rectangle(0, 0, extentWidth, extentHeight), GraphicsUnit.Pixel);
+			smallBitmap.Save(outFile);
 		}
 	}
 }
