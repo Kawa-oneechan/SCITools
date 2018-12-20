@@ -1,0 +1,232 @@
+!utf8
+
+//This is 0.MSG from Leisure Suit Larry 6, exported from SV and converted to UTF-8 with the fancy quote marks and ellipsises.
+//Utf8Message can convert it back to an MSG file, but you'll need SCI11+ and a big font to properly use it.
+
+0	0	0	1	99	That would probably do something, but nothing you need to worry about.
+0	0	20	1	99	This game is over. Wait until Larry 7 to save your game!
+0	0	21	1	99	You're too busy right now to access the control panel. Try again later.
+0	0	19	1	99	There's not enough free low memory to restore at this time. Please try again later.
+0	0	15	1	99	There's not enough free low memory to save at this time. Please try again later.
+0	15	0	1	99	You don't need to use it in that way.
+0	4	0	1	99	There's no need for you to touch that!
+0	1	0	1	99	You see nothing special.
+0	5	0	1	99	You don't need to take that.
+0	2	0	1	99	You can think of nothing to say to that.
+0	3	0	1	99	Where were you trying to go?
+0	6	0	1	99	You wouldn't touch that with a 10-foot pole.
+0	6	0	2	99	And you're certainly ill-equipped!
+10	0	0	1	99	Enter number of minutes between reminders:
+10	0	2	1	99	Cancel
+10	0	3	1	99	Done
+10	0	4	1	99	AutoSave™ Interval
+8	0	0	1	99	It's been a while since you saved your game. Would you like to save now?
+8	0	2	1	99	Save
+8	0	3	1	99	Screw It
+8	0	6	1	99	Change Interval
+8	0	4	1	99	AutoSave™ Reminder
+2	0	0	1	1	Hey! Why'd you do that to me?
+2	15	0	1	1	What a coincidence. I have one exactly like that!
+2	10	0	1	26	(I could wear this, but it wouldn't dangle freely away from MY chest!)
+2	27	0	1	1	Oh, yeah. Good idea. Electrocute me, why don't you!?
+2	63	0	1	99	You carefully buff that persistent hangnail completely off your finger!
+2	63	0	2	1	YEOW! That file is tough!
+2	25	0	1	99	You touch one terminal with your tongue and the other with your nose, but you still can't get a charge out of life!
+2	48	0	1	99	You COULD wear the inflatable beaver… IF you were in the pool and IF it was inflated!
+2	9	0	1	99	(SOUNDFX) Glug, glug, glug, glug, glug, glug, glug.
+2	9	0	2	1	Ahhhhhh!
+2	16	0	1	1	”I've got rings on my fingers and bracelets on my…” Wait a minute.
+2	54	0	1	99	Rubbing the brochure filled with photos of naked chicks all over your body will do nothing to further your immediate goals!
+2	54	0	2	26	(No, but it's kinda fun!)
+2	65	0	1	99	Here? Now? Why?
+2	26	0	1	99	You briefly consider forming the cord into a noose and looping it around your neck, but decide you're not doing THAT badly yet!
+2	20	0	1	1	Hey, man! Good idea. I was thirsty!
+2	20	0	2	99	But just in the nick of time, you stop because you refuse to drink alone!
+2	20	0	3	1	Awwwh!
+2	37	0	1	1	Ah! That feels cool.
+2	4	0	1	1	Hee hee. That tickles!
+2	4	0	2	1	Ohhhh!
+2	4	0	3	1	OHHHHHHH!!
+2	4	0	4	1	Hey, you really like that, don't you?
+2	4	0	5	99	Could you just wait a little while before we do that again?
+2	4	0	6	99	Stop playing with yourself.
+2	22	0	1	99	You already wore that once. And once is enough!
+2	40	0	1	99	You could pour a little on your hips, but you already have cellulite to spare!
+2	32	0	1	99	You refuse to wear a cellulite-clogged filter on your head like a lampshade at a bad cocktail party!
+2	60	0	1	99	Being especially careful around your incisors, you rid your mouth of all dangerous plaque.
+2	66	0	1	99	Mmmmm. These are redolent.
+2	66	0	2	26	(Was I supposed to pack a thesaurus?)
+2	49	0	1	99	Wearing your beaver is a good idea, but try doing it in the pool.
+2	49	22	1	99	You're already on your beaver!
+2	18	0	1	99	You don't really want to wear the gown.
+2	18	0	2	1	Whew! Thank God! I was afraid I was gonna have do another drag scene, like in “Leisure Suit Larry 2 & 3.”
+2	12	0	1	99	You could lock the handcuffs around your wrists, but wouldn't that slow down the game a lot?!
+2	59	0	1	99	You rub the Al Lowe Vera lotion into a few of those dry places on your knuckles.
+2	59	1	1	99	You rub the Al Lowe Vera lotion into a few of the many wounds Thunderbird inflicted upon you.
+2	58	0	1	99	Don't chance damaging that delicate impression you made!
+2	52	0	1	1	
+2	39	0	1	99	You could bang your head with the lamp but you might hurt it.
+2	39	0	2	1	My head or the lamp?
+2	39	0	3	99	Guess!
+2	30	0	1	99	Considering a little self-gratifying Mazola party?
+2	41	0	1	1	
+2	43	0	1	1	OUCH! That's hot!
+2	1	0	1	99	You pause for just a moment to study the one who loves you most…
+2	1	0	2	99	…you.
+2	17	0	1	99	You're plenty lubed already!
+2	42	0	1	99	You try to strike the match by rubbing it on your trousers, but polyester just isn't rough enough to start it burning.
+2	38	0	1	99	You may be thirsty, but your hunger for something else is stronger. Take that water to Gammie!
+2	34	0	1	99	Even though you are getting a little hungry, you decide to save the orange for future use.
+2	13	0	1	99	Mmmmm. This orchid is redolent.
+2	13	0	2	26	(Was I supposed to pack a thesaurus?)
+2	46	0	1	99	This tiny swatch of cloth was “included free with the purchase of any pair of sunglasses.”
+2	46	0	2	26	(Tiny? It's not THAT tiny. There are guys out at the pool wearing swimsuits smaller than that!)
+2	51	0	1	1	
+2	7	0	1	99	You surreptitiously wriggle the key around inside your ear and remove a large blob of ear wax with which you have no idea what to do.
+2	7	0	2	1	Oops! Dropped it.
+2	57	0	1	99	Sure, you COULD rub the soap all over yourself right now, but wouldn't you really rather wait until you're in the shower?
+2	45	0	1	26	(I would look so cool wearing these out by the swimming pool… but not here.)
+2	45	5	1	99	You could wear the sunglasses here, but why bother? You don't have time for sunbathing, Larry!
+2	47	0	1	99	You wouldn't dare wear that trifling little thing anywhere except poolside. Go out there and change.
+2	5	0	1	1	Take me! I'm mine!!
+2	2	0	1	1	(MUMBLE SOFTLY) Mozxcoiq fqweyzxc fw zxce wqf.
+2	2	0	2	1	(MUMBLE SOFTLY) Now what was it I was supposed to remember?
+2	2	0	3	1	(MUMBLE SOFTLY) I wanted to say something, but now I can't remember.
+2	2	0	4	1	(MUMBLE SOFTLY) They say this is the first sign of old age!
+2	61	0	1	99	You don't really need a dickey!
+2	61	0	2	1	WHAT?!
+2	61	0	3	99	…made of thin white tissue paper!
+2	61	0	4	26	(Whew!)
+2	62	0	1	99	Normally one uses that when one's pants are around one's ankles!
+2	56	0	1	99	You furtively wipe a few drops of perspiration from your upper lip and hope that no cute babes have noticed.
+2	50	0	1	1	
+2	35	0	1	99	No one will ever know you wiped your forehead with that washcloth.
+2	36	0	1	99	Your wet washcloth smells nice and clean.
+2	36	12	1	99	Your wet washcloth smells of diluted beer and label glue!
+2	36	14	1	99	Your wet washcloth is brown with stains from that dirty sink water you soaked it in.
+2	36	8	1	99	Your wet washcloth smells of briny sea water.
+2	36	9	1	99	Your wet washcloth smells like piss!
+2	36	10	1	99	Your wet washcloth smells of chlorine.
+2	36	13	1	99	Your wet washcloth smells of athlete's foot remedies and chlorine!
+2	36	11	1	99	Your wet washcloth smells like crap!
+2	64	0	1	99	What's the matter? Got a nut loose?
+2	19	0	1	99	
+2	6	0	1	99	You carefully adjust your clothing.
+2	6	0	2	1	Ahhh.
+2	6	0	3	99	You hope no one noticed.
+4	4	0	1	99	Trying to jerry-rig the Points-O-Meter™?
+4	1	0	1	99	The Points-O-Meter™ shows you how many points you've earned.
+4	5	0	1	99	You want to “take away” some points?
+4	2	0	1	99	Beg all you want! You're not getting any free points!
+
+// These messages get to keep their ASCII quotes as they're meant for use in MS-DOS.
+7	0	0	1	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					Remember: we did it all with 1's and 0's!
+7	0	0	2	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					Have you found the dirty parts yet?
+7	0	0	3	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					While you were playing the game, we were examining your hard drive.
+					(Boy, are you in trouble!)
+7	0	0	4	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					Geez, what a boring DOS prompt you have!
+7	0	0	5	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					”Shape Up or Slip Out” is a reference to the fact that Larry is trapped in 
+					a health spa. Now do you get it?
+7	0	0	6	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					This has been an “Up & Coming” production.
+7	0	0	7	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					Leisure Suit Larry was created by Al Lowe.
+					Al Lowe bears no resemblance to any persons, living or dead.
+7	0	0	8	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					Leisure Suit Larry is a registered trademark of Sierra On-Line, Inc.
+					(Of course that's hard to believe. But it's true!)
+7	0	0	9	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					As always, if you liked our game, tell a friend.
+					
+					If you didn't like it, keep it to yourself.
+					No one really values your opinion anyway!
+7	0	0	10	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					Is it time for Letterman already?
+7	0	0	11	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					Exactly what are you going to do that's more fun than THIS?
+7	0	0	12	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					Warning: You are now entering real life!
+7	0	0	13	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					Don't go away mad... in fact, don't even go away!
+7	0	0	14	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					Oh, come on. You've got enough time. Let's play just a little longer!
+7	0	0	15	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					Come back again when you can stay longer.
+7	0	0	16	99	
+					(c) 1993 Sierra On-Line, Inc.
+					Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"
+					
+					What did you think you were going to see, you pervert? Gotcha!
+
+
+5	0	0	1	1	Hey, don't go! What am I supposed to do inside here while you're gone?
+5	0	2	1	99	Quit
+5	0	3	1	99	Oops
+5	0	4	1	99	Don't Give Up Now!
+6	0	0	1	99	Do you really want to start over again from the very beginning?
+6	0	2	1	99	Yep
+6	0	3	1	99	Oops
+6	0	4	1	99	Start Over From The Beginning?
+9	0	0	1	99	Now would be a good time to save your game.
+9	0	2	1	99	Save
+9	0	3	1	99	Screw it
+9	0	4	1	99	Save-O-Matic™
+11	0	0	1	99	Would you like to be prompted to save after major sequences in the game?
+11	0	2	1	99	Yes
+11	0	3	1	99	No
+11	0	4	1	99	Save-O-Matic™
+12	0	0	1	99	Your game was saved successfully as “%s.”
+12	0	17	1	99	Your disk is full. Delete some save games and try again.
+12	0	16	1	99	Invalid save game directory: 
+12	0	18	1	99	OK
+12	0	4	1	99	Game Saved
