@@ -187,7 +187,12 @@ namespace Pic2SciFont
 			//16384 ought to be big enough to cover my needs.
 			//Might have to notice we're out of height and try
 			//again at 32 characters per line.
-			var bigBitmap = new Bitmap(16384, 16384);
+			var bigWidth = 1024;
+			var bigHeight = 512;
+			var charsPerRow = 16;
+			var attempt = 0;
+	makeAnAttempt:
+			var bigBitmap = new Bitmap(bigWidth, bigHeight);
 			var g = Graphics.FromImage(bigBitmap);
 			g.Clear(Color.Silver);
 			var extentWidth = 32;
@@ -208,9 +213,27 @@ namespace Pic2SciFont
 				var height = fontFile.ReadByte();
 				if (height > maxHeight)
 					maxHeight = height;
+
+				if (top + height > bigHeight)
+				{
+					attempt++;
+					if (attempt < 2)
+						charsPerRow *= 2;
+					else
+					{
+						if (attempt % 2 == 1)
+							bigWidth *= 2;
+						else
+							bigHeight *= 2;
+					}
+					Console.WriteLine("Out of space. Trying again with a {0}x{1} canvas and {2} characters per line.", bigWidth, bigHeight, charsPerRow);
+					goto makeAnAttempt;
+				}
+
 				var b = 0;
 				for (var line = 0; line < height; line++)
 				{
+
 					for (int done = 0; done < width; done++)
 					{
 						if ((done & 7) == 0)
@@ -221,8 +244,10 @@ namespace Pic2SciFont
 				}
 				g.DrawRectangle(Pens.Gray, left - 1, top - 1, width + 1, height + 1);
 
+				bigBitmap.Save(outFile);
+
 				left += width + 2;
-				if (i % 16 == 15)
+				if (i % charsPerRow == charsPerRow - 1)
 				{
 					if (left > extentWidth)
 						extentWidth = left + 0;
@@ -230,6 +255,7 @@ namespace Pic2SciFont
 					top += maxHeight + 2;
 					maxHeight = 1;
 				}
+
 			}
 			extentHeight = top + 1;
 
