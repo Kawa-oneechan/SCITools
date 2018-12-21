@@ -17,4 +17,6 @@ If there's a `997.txt` and no `997.voc` file, or the former is more recently cha
 # Utf8Message
 
 Given a message resource file in text format as exported by SV, this'll compile it back into a valid resource file. But there's a twist: if the first line is `!utf8`, the text will be read and stored as such. It also accepts `//` comments and blank lines. Blank lines that are *part of a message* start with five tabs and won't be skipped.
-`AutoSave\05 Interval` can thus be rewritten as `AutoSave™ Interval`, where the trademark is stored as-is as a three-byte sequence instead of a three-byte escape.
+`AutoSave\05 Interval` can thus be rewritten as `AutoSave™ Interval`, where the trademark is stored as-is as a three-byte sequence instead of a three-byte escape. UTF-8 message resources have a little marker at the end, ignored by the interpreter.
+
+Again, you can also provide a message resource file, and get a properly-formatted text file back, including the `!utf8` line if the input calls for it.
