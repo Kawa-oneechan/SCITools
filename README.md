@@ -20,3 +20,5 @@ Given a message resource file in text format as exported by SV, this'll compile 
 `AutoSave\05 Interval` can thus be rewritten as `AutoSave™ Interval`, where the trademark is stored as-is as a three-byte sequence instead of a three-byte escape. UTF-8 message resources have a little marker at the end, ignored by the interpreter.
 
 Again, you can also provide a message resource file, and get a properly-formatted text file back, including the `!utf8` line if the input calls for it.
+
+If there are `.sh` files available, these will be used to clarify the noun, verb, condition, and talker values. Talker values are taken from `talkers.sh`, verbs from `verbs.sh`, nouns and conditions from `<basename>.sh`. This uses a very simple parser that works on SCI Companion's files so don't muck them up.

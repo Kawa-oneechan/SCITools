@@ -17,6 +17,11 @@ namespace Utf8Message
 
 	class Program
 	{
+		static string[] Nouns = new string[256];
+		static string[] Verbs = new string[256];
+		static string[] Talkers = new string[256];
+		static string[] Conds = new string[256];
+
 		static void Main(string[] args)
 		{
 			if (args.Length == 0)
@@ -34,6 +39,7 @@ namespace Utf8Message
 
 		static void Text2Msg(string inFile, string outFile)
 		{
+			GetRelevantSH(Path.GetFileNameWithoutExtension(inFile));
 			var lines = File.ReadAllLines(inFile, Encoding.GetEncoding(1252));
 			var utf8 = lines[0] == "!utf8";
 			if (utf8)
@@ -47,34 +53,39 @@ namespace Utf8Message
 				if (line.StartsWith("//"))
 					continue;
 				var data = line.Split('\t');
-				var noun = byte.Parse(data[0]);
-				var verb = byte.Parse(data[1]);
-				var cond = byte.Parse(data[2]);
+				var noun = ParseWithSH(data[0], Nouns);
+				var verb = ParseWithSH(data[1], Verbs);
+				var cond = ParseWithSH(data[2], Conds);
 				var seq = byte.Parse(data[3]);
-				var talker = byte.Parse(data[4]);
+				var talker = ParseWithSH(data[4], Talkers);
 				var text = data[5];
 				if (i < lines.Length - 1)
 				{
 					var j = i + 1;
-					while (lines[j].StartsWith("\t\t\t\t\t"))
+					try
 					{
-						/* In LSL6 0.MSG, there are newlines after the random quit messages.
-						 * These are apparently not preserved by SV's export, so you can't roundtrip them:
-						 *	\r\n
-						 *	(c) 1993 Sierra On-Line, Inc.\r\n
-						 *	Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"\r\n
-						 *	\r\n
-						 *	Remember: we did it all with 1's and 0's!\r\n <-- this newline is left out in the export!
-						 *	\00
-						 *	\r\n
-						 *	(c) 1993 Sierra On-Line, Inc.
-						 *
-						 * We replicate this in Msg2Text() for compatibility reasons.
-						 */
-						text = text + "\r\n" + lines[j].Substring(5);
-						i++;
-						j++;
+						while (lines[j].StartsWith("\t\t\t\t\t"))
+						{
+							/* In LSL6 0.MSG, there are newlines after the random quit messages.
+							 * These are apparently not preserved by SV's export, so you can't roundtrip them:
+							 *	\r\n
+							 *	(c) 1993 Sierra On-Line, Inc.\r\n
+							 *	Thank you for playing Leisure Suit Larry 6: "Shape Up or Slip Out!"\r\n
+							 *	\r\n
+							 *	Remember: we did it all with 1's and 0's!\r\n <-- this newline is left out in the export!
+							 *	\00
+							 *	\r\n
+							 *	(c) 1993 Sierra On-Line, Inc.
+							 *
+							 * We replicate this in Msg2Text() for compatibility reasons.
+							 */
+							text = text + "\r\n" + lines[j].Substring(5);
+							i++;
+							j++;
+						}
 					}
+					catch (IndexOutOfRangeException)
+					{ }
 				}
 				messages.Add(new Message() { Noun = noun, Verb = verb, Cond = cond, Seq = seq, Talker = talker, Text = text });
 			}
@@ -111,6 +122,7 @@ namespace Utf8Message
 
 		static void Msg2Text(string inFile, string outFile)
 		{
+			GetRelevantSH(Path.GetFileNameWithoutExtension(inFile));
 			var msg = new BinaryReader(File.Open(inFile, FileMode.Open));
 			msg.BaseStream.Seek(-4, SeekOrigin.End);
 			var utf8 = msg.ReadInt32() == 0x38465455;
@@ -134,7 +146,7 @@ namespace Utf8Message
 				text = text.Replace("\n", "\n\t\t\t\t\t");
 
 				output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}",
-					records[i].Noun, records[i].Verb, records[i].Cond, records[i].Seq, records[i].Talker, text);
+					Nouns[records[i].Noun], Verbs[records[i].Verb], Conds[records[i].Cond], records[i].Seq, Talkers[records[i].Talker], text);
 			}
 			output.Flush();
 			output.Close();
@@ -150,6 +162,45 @@ namespace Utf8Message
 				bytes.Add(i);
 			}
 			return enc.GetString(bytes.ToArray());
+		}
+
+		static byte ParseWithSH(string keyword, string[] list)
+		{
+			for (var i = 0; i < 256; i++)
+				if (list[i] == keyword)
+					return (byte)i;
+			return 0;
+		}
+
+		static void ParseRelevantSH(string file, string lineStart, string[] list)
+		{
+			foreach (var line in File.ReadLines(file))
+			{
+				if (line.StartsWith(lineStart))
+				{
+					var a = line; //.Substring(10);
+					var b = a.Substring(a.IndexOf(' ') + 1);
+					var c = b.Substring(b.IndexOf(' ') + 1);
+					b = b.Substring(0, b.IndexOf(' '));
+					c = c.Substring(0, c.Length - 1);
+					list[int.Parse(c)] = b;
+				}
+			}
+		}
+
+		static void GetRelevantSH(string basename)
+		{
+			for (var i = 0; i < 256; i++)
+				Nouns[i] = Verbs[i] = Talkers[i] = Conds[i] = i.ToString();
+			if (File.Exists("verbs.sh"))
+				ParseRelevantSH("verbs.sh", "(define V_", Verbs);
+			if (File.Exists("talkers.sh"))
+				ParseRelevantSH("talkers.sh", "(define ", Talkers);
+			if (File.Exists(basename + ".sh"))
+			{
+				ParseRelevantSH(basename + ".sh", "(define C_", Conds);
+				ParseRelevantSH(basename + ".sh", "(define N_", Nouns);
+			}
 		}
 	}
 }
