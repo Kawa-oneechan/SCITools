@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{3CAB47CE-CAD8-4B33-B6C1-550AEB13601E}</ProjectGuid>
+    <ProjectGuid>{E5442B31-CC32-4E0B-99AA-958EB7CC0CAD}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Voc999Creator</RootNamespace>

@@ -174,17 +174,16 @@ namespace Utf8Message
 
 		static void ParseRelevantSH(string file, string lineStart, string[] list)
 		{
-			foreach (var line in File.ReadLines(file))
+			var sexp = new Kawa.SExp.SExpression(File.ReadAllText(file));
+			foreach (var ding in (sexp.Data as List<object>).OfType<List<object>>())
 			{
-				if (line.StartsWith(lineStart))
-				{
-					var a = line; //.Substring(10);
-					var b = a.Substring(a.IndexOf(' ') + 1);
-					var c = b.Substring(b.IndexOf(' ') + 1);
-					b = b.Substring(0, b.IndexOf(' '));
-					c = c.Substring(0, c.Length - 1);
-					list[int.Parse(c)] = b;
-				}
+				if (ding.Count != 3)
+					continue;
+				if (ding[0].ToString() != "define")
+					continue;
+				var name = ding[1].ToString();
+				var num = (int)ding[2];
+				list[num] = name;
 			}
 		}
 
