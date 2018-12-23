@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utf8Message", "Utf8Message\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voc999Creator", "Voc999Creator\Voc999Creator.csproj", "{CA83D3AD-2094-4126-B0A2-B60BF156893F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeqMaker", "SeqMaker\SeqMaker.csproj", "{431E1E89-4730-4A77-95B6-CF764D3B2B79}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -31,6 +33,10 @@ Global
 		{CA83D3AD-2094-4126-B0A2-B60BF156893F}.Debug|x86.Build.0 = Debug|x86
 		{CA83D3AD-2094-4126-B0A2-B60BF156893F}.Release|x86.ActiveCfg = Release|x86
 		{CA83D3AD-2094-4126-B0A2-B60BF156893F}.Release|x86.Build.0 = Release|x86
+		{431E1E89-4730-4A77-95B6-CF764D3B2B79}.Debug|x86.ActiveCfg = Debug|x86
+		{431E1E89-4730-4A77-95B6-CF764D3B2B79}.Debug|x86.Build.0 = Debug|x86
+		{431E1E89-4730-4A77-95B6-CF764D3B2B79}.Release|x86.ActiveCfg = Release|x86
+		{431E1E89-4730-4A77-95B6-CF764D3B2B79}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
