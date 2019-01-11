@@ -1,0 +1,18 @@
+//This example file demonstrates REFERENCES.
+
+//Most other tools I've seen besides Sierra's own don't handle these. At all.
+//Referenced lines allow you to use the same line multiple times, while only
+//saving it only. Lines that are references are themselves saved as blanks.
+
+//Reference lines can themselves reference more references, up to five levels
+//deep. References point to entire sequences, not individual parts.
+
+//To make a line a reference, write "[REF noun verb cond]" in its text field.
+//You can use defined names if you want.
+
+//noun	verb	cond	seq	talker	line
+1	4	7	1	99	This is line A.
+2	5	8	1	99	This is line B.
+3	6	9	1	99	[REF 1 4 7] This is line C,
+					but it will be stored as a
+					reference to line A.

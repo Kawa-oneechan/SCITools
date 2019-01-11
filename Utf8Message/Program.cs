@@ -12,6 +12,7 @@ namespace Utf8Message
 	{
 		public byte Noun, Verb, Cond, Seq, Talker;
 		public short Offset;
+		public byte refNoun, refVerb, refCond, refSeq;
 		public string Text;
 	}
 
@@ -59,6 +60,9 @@ namespace Utf8Message
 				var seq = byte.Parse(data[3]);
 				var talker = ParseWithSH(data[4], Talkers);
 				var text = data[5];
+				var refNoun = (byte)0;
+				var refVerb = (byte)0;
+				var refCond = (byte)0;
 				if (i < lines.Length - 1)
 				{
 					var j = i + 1;
@@ -87,7 +91,20 @@ namespace Utf8Message
 					catch (IndexOutOfRangeException)
 					{ }
 				}
-				messages.Add(new Message() { Noun = noun, Verb = verb, Cond = cond, Seq = seq, Talker = talker, Text = text });
+				if (text.StartsWith("[REF "))
+				{
+					var reference = text.Substring(5);
+					var refData = reference.Substring(0, reference.IndexOf(']')).Split(' ');
+					refNoun = ParseWithSH(refData[0], Nouns);
+					refVerb = ParseWithSH(refData[1], Verbs);
+					refCond = ParseWithSH(refData[2], Conds);
+					text = string.Empty;
+				}
+				messages.Add(new Message()
+				{
+					Noun = noun, Verb = verb, Cond = cond, Seq = seq, Talker = talker, Text = text,
+					refNoun = refNoun, refVerb = refVerb, refCond = refCond, refSeq = 0 //refSeq is *always* zero don't be silly.
+				});
 			}
 			var msg = new BinaryWriter(File.Open(outFile, FileMode.Create));
 			msg.Write((short)0x8F); //resource
@@ -114,7 +131,11 @@ namespace Utf8Message
 				msg.Write(message.Seq);
 				msg.Write(message.Talker);
 				msg.Write(offsets[0]);
-				msg.Write((int)0x01000000); //ref
+				msg.Write(message.refNoun);
+				msg.Write(message.refVerb);
+				msg.Write(message.refCond);
+				msg.Write(message.refSeq);
+				//msg.Write((int)0x01000000); //ref
 				offsets.RemoveAt(0);
 			}
 			msg.Close();
@@ -130,23 +151,54 @@ namespace Utf8Message
 			var output = new StreamWriter(outFile, false, enc);
 			if (utf8)
 				output.WriteLine("!utf8");
+			output.WriteLine("//noun\tverb\tcond\tseq\ttalker\tline");
 			msg.BaseStream.Seek(0xA, SeekOrigin.Begin);
 			var num = msg.ReadInt16();
 			var records = new Message[num];
 			for (var i = 0; i < num; i++)
 			{
-				records[i] = new Message() { Noun = msg.ReadByte(), Verb = msg.ReadByte(), Cond = msg.ReadByte(), Seq = msg.ReadByte(), Talker = msg.ReadByte(), Offset = msg.ReadInt16() };
-				msg.ReadInt32();
+				records[i] = new Message()
+				{
+					Noun = msg.ReadByte(), Verb = msg.ReadByte(), Cond = msg.ReadByte(), Seq = msg.ReadByte(),
+					Talker = msg.ReadByte(), Offset = msg.ReadInt16(),
+					refNoun = msg.ReadByte(), refVerb = msg.ReadByte(), refCond = msg.ReadByte(), refSeq = msg.ReadByte(),
+				};
+				//msg.ReadInt32();
 			}
 			for (var i = 0; i < num; i++)
 			{
-				msg.BaseStream.Seek(2 + records[i].Offset, SeekOrigin.Begin);
+				var rec = records[i];
+				var origRec = rec;
+				msg.BaseStream.Seek(2 + rec.Offset, SeekOrigin.Begin);
 				var text = ReadCString(msg, enc);
+				
+				while (rec.refNoun + rec.refVerb + rec.refCond > 0)
+				{
+					//resolve reference
+					var resolved = false;
+					for (var j = 0; j < num; j++)
+					{
+						if (records[j].Noun == rec.refNoun && records[j].Verb == rec.refVerb && records[j].Cond == rec.refCond)
+						{
+							rec = records[j];
+							resolved = true;
+							break;
+						}
+					}
+					if (!resolved)
+					{
+						text = "*** INVALID REFERENCE ***";
+						break;
+					}
+					msg.BaseStream.Seek(2 + rec.Offset, SeekOrigin.Begin);
+					text = string.Format("[REF {0} {1} {2}] {3}", Nouns[rec.Noun], Verbs[rec.Verb], Conds[rec.Cond], ReadCString(msg, enc));
+				}
+				rec = origRec;
 
 				text = text.Replace("\n", "\n\t\t\t\t\t");
 
 				output.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}",
-					Nouns[records[i].Noun], Verbs[records[i].Verb], Conds[records[i].Cond], records[i].Seq, Talkers[records[i].Talker], text);
+					Nouns[rec.Noun], Verbs[rec.Verb], Conds[rec.Cond], rec.Seq, Talkers[rec.Talker], text);
 			}
 			output.Flush();
 			output.Close();
