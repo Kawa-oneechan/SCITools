@@ -165,6 +165,7 @@ namespace SeqMaker
 
 				fileStream.Write(palChunk);
 
+				var frameCount = 0;
 				foreach (var frame in frameList)
 				{
 					filename = frame;
@@ -251,11 +252,75 @@ namespace SeqMaker
 					}
 					
 					//TODO: COMPRESS THAT SHIT
+					var rleSize = 0;
+					if (frameCount > 0)
+					{
+						var spans = new List<Tuple<int, int, bool, int>>();
+						//Compare frame with previous, marking off spans as SAME or DIFFERENT
+						var spanStart = 0;
+						var spanEnd = 0;
+						var spanSame = false;
+						for (var row = frameTop; row < frameTop + frameHeight; row++)
+						{
+							for (var col = frameLeft; col < frameLeft + frameWidth; col++)
+							{
+								var here = (row* 320) + col;
+								if (spanEnd == 0)
+								{
+									spanSame = bitmap[here] == previous[here];
+									spanEnd++;
+									continue;
+								}
+								if (col == frameLeft + frameWidth - 1)
+								{
+									spans.Add(Tuple.Create(spanStart, spanEnd, spanSame, 0));
+									spanStart = spanEnd--;
+									spanSame = bitmap[here] == previous[here];
+								}
+								else if (bitmap[here] == previous[here])
+								{
+									if (!spanSame || spanEnd - spanStart == 0x3F)
+									{
+										spans.Add(Tuple.Create(spanStart, spanEnd, spanSame, spanEnd - spanStart));
+										spanStart = spanEnd;
+										spanSame = true;
+									}
+								}
+								else if (bitmap[here] != previous[here])
+								{
+									if (spanSame || spanEnd - spanStart == 0x3F)
+									{
+										spans.Add(Tuple.Create(spanStart, spanEnd, spanSame, spanEnd - spanStart));
+										spanStart = spanEnd;
+										spanSame = false;
+									}
+								}
+								spanEnd++;
+							}
+						}
+						var rleData = new List<byte>();
+						var litData = new List<byte>();
+						var l = 0;
+						foreach (var span in spans)
+						{
+							var len = span.Item4;
+							var baseByte = span.Item3 ? 0x80 : 0xC0;
+							rleData.Add((byte)(baseByte | len));
+							if (span.Item3)
+								for (var i = 0; i <= len; i++, l++)
+									litData.Add(actualF[l]);
+							else
+								l += len;
+						}
+						rleSize = rleData.Count;
+						rleData.AddRange(litData);
+						actualF = rleData.ToArray();
+					}
 
 					var colorKey = 255;
-					var frameType = 0; //full frame
+					var frameType = rleSize == 0 ? 0 : 1; //0; //full frame
 					var frameSize = frameWidth * frameHeight;
-					var rleSize = 0;
+					//var rleSize = 0;
 					fileStream.Write((UInt16)frameWidth);
 					fileStream.Write((UInt16)frameHeight);
 					fileStream.Write((UInt16)frameLeft);
@@ -273,6 +338,8 @@ namespace SeqMaker
 					fileStream.Write(actualF);
 
 					Array.Copy(bitmap, 0, previous, 0, 64000);
+
+					frameCount++;
 				}
 			}
 			catch (FormatException fex)

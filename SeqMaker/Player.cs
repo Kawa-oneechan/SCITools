@@ -46,12 +46,12 @@ namespace SeqPlay
 				this.ClientSize = new Size(this.ClientSize.Width * 2, this.ClientSize.Height * 2);
 			if (args.Contains("-e"))
 			{
-				outputFile = Path.Combine(Path.GetDirectoryName(args[0]), Path.GetFileNameWithoutExtension(args[0]) + "-0001.png");
+				outputFile = Path.Combine(Path.GetDirectoryName(args[0]), Path.GetFileNameWithoutExtension(args[0]) + "-0000.png");
 				for (var i = 0; i < args.Length; i++)
 				{
 					if (args[i] == "-e")
 					{
-						if (i + 1 < args.Length)
+						if (i + 1 < args.Length && args[i + 1][0] != '-')
 							outputFile = args[i + 1];
 						break;
 					}
@@ -104,10 +104,6 @@ namespace SeqPlay
 			Marshal.Copy(screen, 0, bitmapData.Scan0, 320 * 200);
 			bitmap.UnlockBits(bitmapData);
 			this.Invalidate();
-
-			//skip saving first frame, it'd be black.
-			if (curFrame == 0)
-				return;
 
 			if (!string.IsNullOrEmpty(outputFile))
 			{
