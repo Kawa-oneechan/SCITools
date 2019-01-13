@@ -264,7 +264,7 @@ namespace SeqMaker
 						{
 							for (var col = frameLeft; col < frameLeft + frameWidth; col++)
 							{
-								var here = (row* 320) + col;
+								var here = (row * 320) + col;
 								if (spanEnd == 0)
 								{
 									spanSame = bitmap[here] == previous[here];
@@ -304,17 +304,18 @@ namespace SeqMaker
 						foreach (var span in spans)
 						{
 							var len = span.Item4;
-							var baseByte = span.Item3 ? 0x80 : 0xC0;
+							var baseByte = span.Item3 ? 0xC0 : 0x80;
 							rleData.Add((byte)(baseByte | len));
 							if (span.Item3)
+								l += len;
+							else
 								for (var i = 0; i <= len; i++, l++)
 									litData.Add(actualF[l]);
-							else
-								l += len;
 						}
 						rleSize = rleData.Count;
 						rleData.AddRange(litData);
 						actualF = rleData.ToArray();
+						File.WriteAllBytes("rle.bin", actualF);
 					}
 
 					var colorKey = 255;
