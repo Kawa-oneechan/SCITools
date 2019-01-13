@@ -105,6 +105,10 @@ namespace SeqPlay
 			bitmap.UnlockBits(bitmapData);
 			this.Invalidate();
 
+			//skip saving first frame, it'd be black.
+			if (curFrame == 0)
+				return;
+
 			if (!string.IsNullOrEmpty(outputFile))
 			{
 				bitmap.SaveEx(outputFile);
