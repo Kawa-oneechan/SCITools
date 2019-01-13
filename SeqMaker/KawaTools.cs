@@ -117,7 +117,10 @@ namespace Kawa.Tools
 		/// <param name="data">An array of 64000 bytes to recieve the pixel data of the Bitmap.</param>
 		public static void GetPixels(string from, ref byte[] palette, ref byte[] data)
 		{
-			GetPixels(new Bitmap(from), ref palette, ref data);
+			using (var bmp = new Bitmap(from))
+			{
+				GetPixels(bmp, ref palette, ref data);
+			}
 		}
 
 		/// <summary>
