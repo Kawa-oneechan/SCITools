@@ -255,49 +255,64 @@ namespace SeqMaker
 					var rleSize = 0;
 					if (frameCount > 0)
 					{
-						var spans = new List<Tuple<int, int, bool, int>>();
+						var spans = new List<Tuple<int, int, bool, int, List<byte>>>();
 						//Compare frame with previous, marking off spans as SAME or DIFFERENT
-						var spanStart = 0;
-						var spanEnd = 0;
+						//var spanStart = 0;
+						//var spanEnd = 0;
 						var spanSame = false;
+						var litBytes = new List<byte>();
 						for (var row = frameTop; row < frameTop + frameHeight; row++)
 						{
 							for (var col = frameLeft; col < frameLeft + frameWidth; col++)
 							{
 								var here = (row * 320) + col;
-								if (spanEnd == 0)
+								if (col == frameLeft)
 								{
 									spanSame = bitmap[here] == previous[here];
-									spanEnd++;
+									if (row == frameTop)
+										litBytes.Add(bitmap[here]);
+									//spanEnd++;
 									continue;
 								}
 								if (col == frameLeft + frameWidth - 1)
 								{
-									spans.Add(Tuple.Create(spanStart, spanEnd, spanSame, 0));
-									spanStart = spanEnd--;
-									spanSame = bitmap[here] == previous[here];
+									litBytes.Add(bitmap[here]);
+									spans.Add(Tuple.Create(0, 0, spanSame, 0, litBytes));
+									//spanStart += litBytes.Count;
+									litBytes = new List<byte>();
 								}
 								else if (bitmap[here] == previous[here])
 								{
-									if (!spanSame || spanEnd - spanStart == 0x3F)
+									if (!spanSame || litBytes.Count == 0x3F)
 									{
-										spans.Add(Tuple.Create(spanStart, spanEnd, spanSame, spanEnd - spanStart));
-										spanStart = spanEnd;
+										spans.Add(Tuple.Create(0, 0, spanSame, litBytes.Count, litBytes));
+										//spanStart += litBytes.Count - 1;
 										spanSame = true;
+										litBytes = new List<byte>();
 									}
 								}
 								else if (bitmap[here] != previous[here])
 								{
-									if (spanSame || spanEnd - spanStart == 0x3F)
+									if (spanSame || litBytes.Count == 0x3F)
 									{
-										spans.Add(Tuple.Create(spanStart, spanEnd, spanSame, spanEnd - spanStart));
-										spanStart = spanEnd;
+										spans.Add(Tuple.Create(0, 0, spanSame, litBytes.Count, litBytes));
+										//spanStart += litBytes.Count - 1;
 										spanSame = false;
+										litBytes = new List<byte>();
 									}
 								}
-								spanEnd++;
+								litBytes.Add((byte)bitmap[here]);
+								//spanEnd++;
 							}
 						}
+						var debug = new StringBuilder();
+						foreach (var span in spans)
+						{
+							debug.AppendFormat("{2}\t{3}\t{4}\r\n", span.Item1, span.Item2, span.Item3 ? "skip" : "copy", span.Item4, string.Join(" ", span.Item5.Select(x => x.ToString("00"))));
+							if (span.Item4 == 0)
+								debug.AppendLine();
+						}
+						File.WriteAllText("rle.txt", debug.ToString());
 						var rleData = new List<byte>();
 						var litData = new List<byte>();
 						var l = 0;
@@ -306,11 +321,9 @@ namespace SeqMaker
 							var len = span.Item4;
 							var baseByte = span.Item3 ? 0xC0 : 0x80;
 							rleData.Add((byte)(baseByte | len));
-							if (span.Item3)
-								l += len;
-							else
-								for (var i = 0; i <= len; i++, l++)
-									litData.Add(actualF[l]);
+							if (!span.Item3 && len > 0)
+								litData.AddRange(span.Item5);
+							l += len;
 						}
 						rleSize = rleData.Count;
 						rleData.AddRange(litData);
