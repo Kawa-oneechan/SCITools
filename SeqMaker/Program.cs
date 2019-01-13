@@ -263,23 +263,26 @@ namespace SeqMaker
 						var litBytes = new List<byte>();
 						for (var row = frameTop; row < frameTop + frameHeight; row++)
 						{
+							if (row == frameTop + 25)
+								Console.Write("");
+
+							var here = (row * 320) + frameLeft;
+
+							spanSame = bitmap[here] == previous[here];
+							//if (row == frameTop)
+								litBytes.Add(bitmap[here]);
+
 							for (var col = frameLeft; col < frameLeft + frameWidth; col++)
 							{
-								var here = (row * 320) + col;
-								if (col == frameLeft)
-								{
-									spanSame = bitmap[here] == previous[here];
-									if (row == frameTop)
-										litBytes.Add(bitmap[here]);
-									//spanEnd++;
-									continue;
-								}
+								here++;
+	
 								if (col == frameLeft + frameWidth - 1)
 								{
-									litBytes.Add(bitmap[here]);
+									//litBytes.Add(bitmap[here]);
 									spans.Add(Tuple.Create(0, 0, spanSame, 0, litBytes));
 									//spanStart += litBytes.Count;
 									litBytes = new List<byte>();
+									continue;
 								}
 								else if (bitmap[here] == previous[here])
 								{
