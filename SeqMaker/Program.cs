@@ -309,6 +309,8 @@ namespace SeqMaker
 							}
 						}
 						var debug = new StringBuilder();
+						if (spans[spans.Count - 1].Item3 && spans[spans.Count - 1].Item4 == 0)
+							spans.RemoveAt(spans.Count - 1);
 						foreach (var span in spans)
 						{
 							debug.AppendFormat("{2}\t{3}\t{4}\r\n", span.Item1, span.Item2, span.Item3 ? "skip" : "copy", span.Item4, string.Join(" ", span.Item5.Select(x => x.ToString("00"))));
@@ -328,15 +330,17 @@ namespace SeqMaker
 								litData.AddRange(span.Item5);
 							l += len;
 						}
-						rleSize = rleData.Count;
+						rleSize = rleData.Count - 1;
 						rleData.AddRange(litData);
+						for (var padding = 0; padding < 16; padding++)
+							rleData.Add(0);
 						actualF = rleData.ToArray();
 						File.WriteAllBytes("rle.bin", actualF);
 					}
 
 					var colorKey = 255;
 					var frameType = rleSize == 0 ? 0 : 1; //0; //full frame
-					var frameSize = frameWidth * frameHeight;
+					var frameSize = actualF.Length; //frameWidth * frameHeight;
 					//var rleSize = 0;
 					fileStream.Write((UInt16)frameWidth);
 					fileStream.Write((UInt16)frameHeight);
