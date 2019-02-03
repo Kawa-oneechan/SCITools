@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-//TODO: recognize and use VERBS.SH and TALKERS.SH.
-
 namespace Utf8Message
 {
 	struct Message
