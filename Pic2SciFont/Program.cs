@@ -87,7 +87,7 @@ namespace Pic2SciFont
 						pixel = sheet.GetPixel(left, top).GetBrightness();
 					}
 					top -= thisCellHeight;
-					left += thisCellWidth + 1;
+					left += thisCellWidth;
 
 					//we now have the position and size of the cell.
 					if (thisCellHeight > maxHeight)
