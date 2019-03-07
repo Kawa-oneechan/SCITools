@@ -231,7 +231,7 @@ namespace Pic2SciFont
 					maxHeight = 1;
 				}
 			}
-			extentHeight = top + 1;
+			extentHeight = top + maxHeight + 2;
 
 			var smallBitmap = new Bitmap(extentWidth, extentHeight);
 			g = Graphics.FromImage(smallBitmap);
