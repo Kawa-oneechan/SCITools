@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voc999Creator", "Voc999Crea
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeqMaker", "SeqMaker\SeqMaker.csproj", "{431E1E89-4730-4A77-95B6-CF764D3B2B79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minisembler", "Minisembler\Minisembler.csproj", "{2031C27C-9AD0-4170-8398-8ACE069CD0BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -37,6 +39,10 @@ Global
 		{431E1E89-4730-4A77-95B6-CF764D3B2B79}.Debug|x86.Build.0 = Debug|x86
 		{431E1E89-4730-4A77-95B6-CF764D3B2B79}.Release|x86.ActiveCfg = Release|x86
 		{431E1E89-4730-4A77-95B6-CF764D3B2B79}.Release|x86.Build.0 = Release|x86
+		{2031C27C-9AD0-4170-8398-8ACE069CD0BF}.Debug|x86.ActiveCfg = Debug|x86
+		{2031C27C-9AD0-4170-8398-8ACE069CD0BF}.Debug|x86.Build.0 = Debug|x86
+		{2031C27C-9AD0-4170-8398-8ACE069CD0BF}.Release|x86.ActiveCfg = Release|x86
+		{2031C27C-9AD0-4170-8398-8ACE069CD0BF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

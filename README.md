@@ -26,3 +26,7 @@ If there are `.sh` files available, these will be used to clarify the noun, verb
 # SeqMaker
 
 Given a `.seq` file, this will play the file in a window -- click the close button or press `Esc` to exit. Given the first of an image sequence (`something0001.png` or `something-1.png`, who cares), this will instead take that image sequence and make a `.seq` file from it (`something.seq`). There are more options on the command line, such as playing back double-sized with `-d`, aspect-corrected with `-a`, exporting frames as they are played with `-e`, or examining which parts are actually stored for each frame with `-x`.
+
+# Minisembler
+
+Given a `.s` file with only data, this will happily produce a raw binary. It supports only `include`, `org`, `equ`, `db`, `dw`, and `dd` commands, no actual machine code. Given a single file name, it'll put `.bin` at the end.
