@@ -24,7 +24,7 @@ namespace Minisembler
 				if (line.Length == 0)
 					continue;
 
-				var data = line.Split(new[] { ' ', '\t', ',' }, StringSplitOptions.RemoveEmptyEntries);
+				var data = SplitQ(line, new[] { ' ', '\t', ',' }, true);
 				if (data.Length > 2)
 				{
 					if (data[1].ToLowerInvariant() == "equ")
@@ -43,14 +43,22 @@ namespace Minisembler
 						outFile.Seek(Parse(data[1]), SeekOrigin.Begin);
 						break;
 					case "db":
+					case "byte":
 						for (var i = 1; i < data.Length; i++)
-							outFile.Write((byte)Parse(data[i]));
+						{
+							if (data[i].StartsWith("\""))
+								outFile.Write(Encoding.GetEncoding(437).GetBytes(data[i].Substring(1, data[i].Length - 2)));
+							else
+								outFile.Write((byte)Parse(data[i]));
+						}
 						break;
 					case "dw":
+					case "word":
 						for (var i = 1; i < data.Length; i++)
 							outFile.Write((short)Parse(data[i]));
 						break;
 					case "dd":
+					case "dword":
 						for (var i = 1; i < data.Length; i++)
 							outFile.Write((int)Parse(data[i]));
 						break;
@@ -66,6 +74,45 @@ namespace Minisembler
 			if (word.EndsWith("h"))
 				return int.Parse(word.Substring(0, word.Length - 1), System.Globalization.NumberStyles.HexNumber);
 			return int.Parse(word);
+		}
+
+		//"a b \"c d\" e".Split() //returns { "a", "b", "c d", "e" }</example>
+		static string[] SplitQ(string input, char[] separator, bool withQuotes)
+		{
+			var ret = new List<string>();
+			var item = new StringBuilder();
+			for (var i = 0; i < input.Length; i++)
+			{
+				if (input[i] == '\"')
+				{
+					if (withQuotes)
+						item.Append('\"');
+					for (var j = i + 1; j < input.Length; j++)
+					{
+						if (input[j] == '\"')
+						{
+							if (withQuotes)
+								item.Append('\"');
+							i = j;
+							break;
+						}
+						item.Append(input[j]);
+					}
+				}
+				else if (separator.Contains(input[i]))
+				{
+					if (item.Length > 0)
+						ret.Add(item.ToString());
+					item.Clear();
+				}
+				else
+					item.Append(input[i]);
+			}
+
+			if (item.Length > 0)
+				ret.Add(item.ToString());
+
+			return ret.ToArray();
 		}
 
 		static void Main(string[] args)
