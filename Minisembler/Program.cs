@@ -37,7 +37,14 @@ namespace Minisembler
 				switch (firstWord)
 				{
 					case "include":
+						if (data[1].StartsWith("\""))
+							data[1] = data[1].Substring(1, data[1].Length - 2);
 						Process(data[1]);
+						break;
+					case "incbin":
+						if (data[1].StartsWith("\""))
+							data[1] = data[1].Substring(1, data[1].Length - 2);
+						outFile.Write(File.ReadAllBytes(data[1]));
 						break;
 					case "org":
 						outFile.Seek(Parse(data[1]), SeekOrigin.Begin);
