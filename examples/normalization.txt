@@ -1,0 +1,18 @@
+!utf8
+//This example file demonstrates NORMALIZATION.
+
+//SCI11+ does not support combining characters, so these must be
+//normalized into precomposed forms where possible.
+
+//One of these lines has U+014D Latin Small Letter O With Macron.
+//The other has a regular O with U+0304 Combining Macron.
+//When converted to MSG format, they should be identical.
+
+//The third line contains combining marks over spaces.
+//They don't normalize and should stay as they are, only
+//to be stripped away. Thus, the result should be "...   ".
+
+//noun	verb	cond	seq	talker	line
+0	0	0	1	99	Ryōga Hibiki
+0	0	0	2	99	Ryōga Hibiki
+0	0	0	3	99	... ̃ ̄ ̊

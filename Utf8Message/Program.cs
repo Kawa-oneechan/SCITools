@@ -98,6 +98,17 @@ namespace Utf8Message
 					refCond = ParseWithSH(refData[2], Conds);
 					text = string.Empty;
 				}
+				if (utf8)
+				{
+					//Normalize where needed.
+					text = text.Normalize();
+					//TODO: eat leftover combining characters
+					text = string.Join("",
+						text.ToCharArray().Where(c =>
+							char.GetUnicodeCategory(c) != System.Globalization.UnicodeCategory.NonSpacingMark
+						).ToArray()
+					);
+				}
 				messages.Add(new Message()
 				{
 					Noun = noun, Verb = verb, Cond = cond, Seq = seq, Talker = talker, Text = text,
