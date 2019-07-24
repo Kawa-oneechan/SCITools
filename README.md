@@ -1,5 +1,7 @@
 # SCITools
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fceba530294b49e68f92bfc9ae300d83)](https://app.codacy.com/app/Kawa-oneechan/SCITools?utm_source=github.com&utm_medium=referral&utm_content=Kawa-oneechan/SCITools&utm_campaign=Badge_Grade_Dashboard)
+
 This is simply a set of small tools for use with SCI16, some of them mostly for [SCI11+](<https://github.com/Kawa-oneechan/SCI11-Plus>), made by Kawa.
 
 ## Pic2SciFont
