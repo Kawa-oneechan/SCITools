@@ -28,8 +28,6 @@ namespace SeqPlay
 
 		public Player(string[] args)
 		{
-			//InitializeComponent();
-
 			fileStream = new BinaryReader(File.Open(args[0], FileMode.Open));
 
 			screen = new byte[320 * 200];
@@ -219,14 +217,14 @@ namespace SeqPlay
 			{
 				var buf = new byte[frameSize];
 				fileStream.Read(buf, 0, frameSize);
-				DecodeFrame(buf, rleSize, frameSize - rleSize, frameTop, frameLeft, frameWidth, frameHeight);
+				DecodeFrame(buf, rleSize, frameTop, frameLeft, frameWidth, frameHeight);
 			}
 
 			DrawScreen();
 			curFrame++;
 		}
 
-		private void DecodeFrame(byte[] rleData, int rleSize, int litSize, int top, int left, int width, int height)
+		private void DecodeFrame(byte[] rleData, int rleSize, int top, int left, int width, int height)
 		{
 			var writeRow = top;
 			int writeCol = left;
@@ -308,7 +306,6 @@ namespace SeqPlay
 					}
 				}
 			}
-			return;
 		}
 
 		void IDisposable.Dispose()

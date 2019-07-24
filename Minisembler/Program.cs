@@ -88,7 +88,8 @@ namespace Minisembler
 						}
 						break;
 					default:
-						break;
+						Console.WriteLine("Don't know what to do with \"{0}\".", firstWord);
+						return;
 					//TODO: String support?
 				}
 			}
