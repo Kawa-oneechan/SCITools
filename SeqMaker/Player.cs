@@ -284,7 +284,9 @@ namespace SeqPlay
 							break;
 						case 6: //Copy rows
 							if (count == 0)
+							{
 								count = height - writeRow;
+							}
 
 							for (var i = 0; i < count; i++)
 							{

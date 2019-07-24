@@ -118,7 +118,9 @@ namespace Minisembler
 				if (input[i] == '\"')
 				{
 					if (withQuotes)
+					{
 						item.Append('\"');
+					}
 					i++;
 					for (int j = i; j < input.Length; i++, j++)
 					{
@@ -168,7 +170,9 @@ namespace Minisembler
 				inputFilename = args[0];
 				outputFilename = Path.ChangeExtension(inputFilename, ".bin");
 				if (args.Length > 1)
-					outputFilename= args[1];
+				{
+					outputFilename = args[1];
+				}
 			}
 
 			outFile = new BinaryWriter(File.OpenWrite(outputFilename));

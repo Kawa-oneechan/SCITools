@@ -161,48 +161,26 @@ namespace Kawa.Tools
 		}
 	}
 
-	//TODO: rewrite this to have BitmapData be non-static, with its own palette and data arrays.
 	/// <summary>
 	/// Abstracts away the retrieval of an image's raw pixel and palette data, and allows reading ZSoft Paintbrush PCX files into Bitmap objects.
 	/// </summary>
-	public static class BitmapData
+	public class BitmapData
 	{
-		/// <summary>
-		/// Extracts the raw pixel data and optionally palette from a 256-color 320 by 200 pixel Bitmap.
-		/// </summary>
-		/// <param name="from">The name of a bitmap file in any of the formats supported by Bitmap, or ZSoft Paintbrush PCX.</param>
-		/// <param name="palette">An array of 768 bytes to recieve the color palette of the Bitmap, or null.</param>
-		/// <param name="data">An array of 64000 bytes to recieve the pixel data of the Bitmap.</param>
-		public static void GetPixels(string from, ref byte[] palette, ref byte[] data)
-		{
-			using (var bmp = new Bitmap(from))
-			{
-				GetPixels(bmp, ref palette, ref data);
-			}
-		}
+		private byte[] data;
+		private byte[] palette;
 
-		/// <summary>
-		/// Extracts the raw pixel data and optionally palette from a 256-color 320 by 200 pixel Bitmap.
-		/// </summary>
-		/// <param name="from">A Bitmap object.</param>
-		/// <param name="palette">An array of 768 bytes to recieve the color palette of the Bitmap, or null.</param>
-		/// <param name="data">An array of 64000 bytes to recieve the pixel data of the Bitmap.</param>
-		/// <exception cref="System.Exception">Thrown whenever the programmer fucked up.</exception>
-		/// <exception cref="System.FormatException">Thrown whenever the Bitmap is not the right size or color depth.</exception>
-		/// <exception cref="System.ArgumentNullException">Thrown when a null data array is given.</exception>
-		public static void GetPixels(Bitmap from, ref byte[] palette, ref byte[] data)
+		public byte[] Data { get { return data; } }
+		public byte[] Palette { get { return palette; } }
+
+		public void GetPixels(Bitmap from)
 		{
 			if (data == null)
 			{
-				throw new ArgumentNullException("Need a target array.");
+				data = new byte[320 * 200]; //We *could* allow different sizes now...
 			}
-			if (data.Length != 320 * 200)
+			if (palette == null)
 			{
-				throw new ArgumentException("Target array isn't big enough.");
-			}
-			if (palette != null && palette.Length != 256 * 3)
-			{
-				throw new ArgumentException("Palette array isn't big enough.");
+				palette = new byte[256 * 3];
 			}
 			var victim = from;
 			if (victim.PixelFormat != PixelFormat.Format8bppIndexed)
@@ -229,5 +207,29 @@ namespace Kawa.Tools
 			Marshal.Copy(bitmapData.Scan0, data, 0, 320 * 200);
 			victim.UnlockBits(bitmapData);
 		}
+
+		public void GetPixels(string from)
+		{
+			using (var bmp = new Bitmap(from))
+			{
+				GetPixels(bmp);
+			}
+		}
+
+		public BitmapData()
+		{
+			//Just sit and wait.
+		}
+
+		public BitmapData(string from)
+		{
+			GetPixels(from);
+		}
+
+		public BitmapData(Bitmap from)
+		{
+			GetPixels(from);
+		}
+		
 	}
 }

@@ -8,7 +8,7 @@ using Kawa.Tools;
 
 namespace SeqMaker
 {
-	class Program
+	static class Program
 	{
 		static int Main(string[] args)
 		{
@@ -143,7 +143,9 @@ namespace SeqMaker
 			if (wantToCount)
 			{
 				if (string.IsNullOrEmpty(outFile))
+				{
 					outFile = Path.ChangeExtension(filename.RemoveSequence(), ".seq");
+				}
 				//Count frames
 				var firstFile = filename;
 				var lastFile = filename;
@@ -156,9 +158,9 @@ namespace SeqMaker
 				Console.WriteLine("Found {0} frames, from {1} up to {2}.", frameList.Count, Path.GetFileName(firstFile), Path.GetFileName(lastFile));
 			}
 
-			var bitmap = new byte[64000];
+			//var bitmap = new byte[64000];
 			var previous = new byte[64000];
-			var palette = new byte[768];
+			//var palette = new byte[768];
 
 			var fileStream = new BinaryWriter(File.Open(outFile, FileMode.Create));
 			fileStream.Write((UInt16)frameList.Count);
@@ -169,13 +171,14 @@ namespace SeqMaker
 			palChunk[32] = 1;
 			palChunk[29] = 255;
 			fileStream.Write(palChunk.Length);
+			var bitmapData = new BitmapData();
 
 			try
 			{
 				filename = frameList[0];
-				BitmapData.GetPixels(filename, ref palette, ref bitmap);
+				bitmapData.GetPixels(filename);
 
-				Array.Copy(palette, 0, palChunk, 37, 768);
+				Array.Copy(bitmapData.Palette, 0, palChunk, 37, 768);
 
 				fileStream.Write(palChunk);
 
@@ -188,7 +191,8 @@ namespace SeqMaker
 					var frameRight = 319;
 					var frameBottom = 199;
 
-					BitmapData.GetPixels(filename, ref palette, ref bitmap);
+					bitmapData.GetPixels(filename);
+					var bitmap = bitmapData.Data;
 
 					var found = false;
 					for (frameTop = 0; frameTop < 200; frameTop++)

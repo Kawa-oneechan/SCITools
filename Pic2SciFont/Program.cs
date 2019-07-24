@@ -32,9 +32,13 @@ namespace Pic2SciFont
 			{
 				inFile = args[0];
 				if (inFile.EndsWith(".fon", StringComparison.InvariantCultureIgnoreCase))
+				{
 					outFile = Path.ChangeExtension(inFile, ".png");
+				}
 				else
+				{
 					outFile = Path.ChangeExtension(inFile, ".fon");
+				}
 			}
 			if (args.Length >= 2)
 			{
@@ -205,7 +209,7 @@ namespace Pic2SciFont
 			var g = Graphics.FromImage(bigBitmap);
 			g.Clear(Color.Silver);
 			var extentWidth = 0;
-			var extentHeight = 32;
+			var extentHeight = 0;
 			g.FillRectangle(Brushes.White, 2, 2, 2, lineHeight);
 			g.DrawRectangle(Pens.Gray, 1, 1, 3, lineHeight + 1);
 

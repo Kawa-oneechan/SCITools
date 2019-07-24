@@ -178,7 +178,9 @@ namespace Utf8Message
 			var enc = utf8 ? Encoding.UTF8 : Encoding.Default;
 			var output = new StreamWriter(outFile, false, enc);
 			if (utf8)
+			{
 				output.WriteLine("!utf8");
+			}
 			output.WriteLine("//noun\tverb\tcond\tseq\ttalker\tline");
 			msg.BaseStream.Seek(0xA, SeekOrigin.Begin);
 			var num = msg.ReadInt16();
