@@ -24,31 +24,58 @@ namespace Kawa.Tools
 		/// <param name="throwIfMissing">If true, throw an ArgumentException if there is no sequence in the string. If false, silently return the original string.</param>
 		/// <returns>The next string in the sequence, such as "frame004.png".</returns>
 		/// <exception cref="System.ArgumentException">Thrown when there is no sequence in the string and throwIfMissing is true.</exception>
-		static public string IncreaseSequence(this string filename, bool throwIfMissing = false)
+		static public string IncreaseSequence(this string filename, bool throwIfMissing)
 		{
 			var lastNumberPos = -1;
 			for (var i = 0; i < filename.Length; i++)
+			{
 				if (char.IsDigit(filename[i]))
+				{
 					lastNumberPos = i;
+				}
+			}
 			if (lastNumberPos == -1)
 			{
 				if (throwIfMissing)
+				{
 					throw new ArgumentException(string.Format("String \"{0}\" has no number sequence in it.", filename));
+				}
 				else
+				{
 					return filename;
+				}
 			}
 			var firstNumberPos = lastNumberPos;
 			for (var i = lastNumberPos - 1; i >= 0; i--)
+			{
 				if (char.IsDigit(filename[i]))
+				{
 					firstNumberPos = i;
+				}
 				else
+				{
 					break;
+				}
+			}
 			var length = lastNumberPos - firstNumberPos + 1;
 			var numPart = filename.Substring(firstNumberPos, length);
 			var number = int.Parse(numPart);
 			number++;
-			filename = filename.Substring(0, firstNumberPos) + number.ToString("D" + length) + filename.Substring(lastNumberPos + 1);
-			return filename;
+			return filename.Substring(0, firstNumberPos) + number.ToString("D" + length) + filename.Substring(lastNumberPos + 1);
+		}
+
+		/// <summary>
+		/// Given something like a filename with a sequence number in it, returns the next filename.
+		/// </summary>
+		/// <remarks>
+		/// The sequence number is the -last- stretch of consecutive digits in the string.
+		/// </remarks>
+		/// <example>"4.png" =&gt; "5.png"</example>
+		/// <param name="filename">A string with a number in it, such as "frame003.png".</param>
+		/// <returns>The next string in the sequence, such as "frame004.png".</returns>
+		static public string IncreaseSequence(this string filename)
+		{
+			return IncreaseSequence(filename, false);
 		}
 
 		/// <summary>
@@ -61,25 +88,55 @@ namespace Kawa.Tools
 		/// <param name="filename">A string with a number in it, such as "frame003.png".</param>
 		/// <param name="blank">The string to use if the filename starts with a sequence, so that "0001.png" becomes "out.png" instead of ".png".</param>
 		/// <returns>The filename with the sequence part removed.</returns>
-		static public string RemoveSequence(this string filename, string blank = "out")
+		static public string RemoveSequence(this string filename, string blank)
 		{
 			var lastNumberPos = -1;
 			for (var i = 0; i < filename.Length; i++)
+			{
 				if (char.IsDigit(filename[i]))
+				{
 					lastNumberPos = i;
+				}
+			}
 			if (lastNumberPos == -1)
+			{
 				return filename;
+			}
 			var firstNumberPos = lastNumberPos;
 			for (var i = lastNumberPos - 1; i >= 0; i--)
+			{
 				if (char.IsDigit(filename[i]))
+				{
 					firstNumberPos = i;
+				}
 				else
+				{
 					break;
+				}
+			}
 			while (firstNumberPos > 0 && char.IsPunctuation(filename[firstNumberPos - 1]))
+			{
 				firstNumberPos--;
+			}
 			if (firstNumberPos == 0)
+			{
 				return blank + filename.Substring(lastNumberPos + 1);
+			}
 			return filename.Substring(0, firstNumberPos) + filename.Substring(lastNumberPos + 1);
+		}
+
+		/// <summary>
+		/// Given something like a filename with a sequence number in it, returns that filename without a sequence.
+		/// </summary>
+		/// <remarks>
+		/// The sequence number is the -last- stretch of consecutive digits in the string.
+		/// </remarks>
+		/// <example>"foo-4.png" =&gt; "foo.png"</example>
+		/// <param name="filename">A string with a number in it, such as "frame003.png".</param>
+		/// <returns>The filename with the sequence part removed.</returns>
+		static public string RemoveSequence(this string filename)
+		{
+			return RemoveSequence(filename, "out");
 		}
 		
 		/// <summary>
@@ -95,15 +152,16 @@ namespace Kawa.Tools
 				case ".png": bitmap.Save(filename, ImageFormat.Png); break;
 				case ".bmp": bitmap.Save(filename, ImageFormat.Bmp); break;
 				case ".gif": bitmap.Save(filename, ImageFormat.Gif); break;
-				case ".jpg": bitmap.Save(filename, ImageFormat.Jpeg); break;
+				case ".jpg":
 				case ".jpeg": bitmap.Save(filename, ImageFormat.Jpeg); break;
-				case ".tif": bitmap.Save(filename, ImageFormat.Tiff); break;
+				case ".tif":
 				case ".tiff": bitmap.Save(filename, ImageFormat.Tiff); break;
 				default: throw new ArgumentException("Unsupported bitmap file format.");
 			}
 		}
 	}
 
+	//TODO: rewrite this to have BitmapData be non-static, with its own palette and data arrays.
 	/// <summary>
 	/// Abstracts away the retrieval of an image's raw pixel and palette data, and allows reading ZSoft Paintbrush PCX files into Bitmap objects.
 	/// </summary>
@@ -135,16 +193,26 @@ namespace Kawa.Tools
 		public static void GetPixels(Bitmap from, ref byte[] palette, ref byte[] data)
 		{
 			if (data == null)
+			{
 				throw new ArgumentNullException("Need a target array.");
+			}
 			if (data.Length != 320 * 200)
-				throw new Exception("Target array isn't big enough.");
+			{
+				throw new ArgumentException("Target array isn't big enough.");
+			}
 			if (palette != null && palette.Length != 256 * 3)
-				throw new Exception("Palette array isn't big enough.");
+			{
+				throw new ArgumentException("Palette array isn't big enough.");
+			}
 			var victim = from;
 			if (victim.PixelFormat != PixelFormat.Format8bppIndexed)
+			{
 				throw new FormatException("Input images can only be in 256 color format.");
+			}
 			if (victim.Width != 320 || victim.Height != 200)
+			{
 				throw new FormatException("Input images can only be 320 by 200 pixels in size.");
+			}
 
 			if (palette != null)
 			{

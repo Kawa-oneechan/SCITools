@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Minisembler
 {
-	class Program
+	static class Program
 	{
 		private static BinaryWriter outFile;
 		private static Dictionary<string, int> equ = new Dictionary<string, int>();
@@ -17,12 +17,18 @@ namespace Minisembler
 			{
 				var line = rawLine;
 				if (line.StartsWith(";"))
+				{
 					continue;
+				}
 				if (line.Contains(';'))
+				{
 					line = line.Remove(line.IndexOf(';'));
+				}
 				line = line.Trim();
 				if (line.Length == 0)
+				{
 					continue;
+				}
 
 				var data = SplitQ(line, new[] { ' ', '\t', ',' }, true);
 				if (data.Length > 2)
@@ -38,12 +44,16 @@ namespace Minisembler
 				{
 					case "include":
 						if (data[1].StartsWith("\""))
+						{
 							data[1] = data[1].Substring(1, data[1].Length - 2);
+						}
 						Process(data[1]);
 						break;
 					case "incbin":
 						if (data[1].StartsWith("\""))
+						{
 							data[1] = data[1].Substring(1, data[1].Length - 2);
+						}
 						outFile.Write(File.ReadAllBytes(data[1]));
 						break;
 					case "org":
@@ -54,22 +64,32 @@ namespace Minisembler
 						for (var i = 1; i < data.Length; i++)
 						{
 							if (data[i].StartsWith("\""))
+							{
 								outFile.Write(Encoding.GetEncoding(437).GetBytes(data[i].Substring(1, data[i].Length - 2)));
+							}
 							else
+							{
 								outFile.Write((byte)Parse(data[i]));
+							}
 						}
 						break;
 					case "dw":
 					case "word":
 						for (var i = 1; i < data.Length; i++)
+						{
 							outFile.Write((short)Parse(data[i]));
+						}
 						break;
 					case "dd":
 					case "dword":
 						for (var i = 1; i < data.Length; i++)
-							outFile.Write((int)Parse(data[i]));
+						{
+							outFile.Write(Parse(data[i]));
+						}
 						break;
-					//TODO: String support? Probably steal SplitQ from my Noxico project to make that easier...
+					default:
+						break;
+					//TODO: String support?
 				}
 			}
 		}
@@ -77,9 +97,13 @@ namespace Minisembler
 		static int Parse(string word)
 		{
 			if (equ.ContainsKey(word))
+			{
 				return equ[word];
+			}
 			if (word.EndsWith("h"))
+			{
 				return int.Parse(word.Substring(0, word.Length - 1), System.Globalization.NumberStyles.HexNumber);
+			}
 			return int.Parse(word);
 		}
 
@@ -94,13 +118,13 @@ namespace Minisembler
 				{
 					if (withQuotes)
 						item.Append('\"');
-					for (var j = i + 1; j < input.Length; j++)
+					i++;
+					for (int j = i; j < input.Length; i++, j++)
 					{
 						if (input[j] == '\"')
 						{
 							if (withQuotes)
 								item.Append('\"');
-							i = j;
 							break;
 						}
 						item.Append(input[j]);
@@ -109,15 +133,21 @@ namespace Minisembler
 				else if (separator.Contains(input[i]))
 				{
 					if (item.Length > 0)
+					{
 						ret.Add(item.ToString());
+					}
 					item.Clear();
 				}
 				else
+				{
 					item.Append(input[i]);
+				}
 			}
 
 			if (item.Length > 0)
+			{
 				ret.Add(item.ToString());
+			}
 
 			return ret.ToArray();
 		}

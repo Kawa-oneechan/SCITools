@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Voc997Creator
 {
-	class Program
+	static class Program
 	{
 		static void Main(string[] args)
 		{
@@ -52,9 +52,13 @@ namespace Voc997Creator
 			{
 				inFile = args[0];
 				if (inFile.EndsWith("voc", StringComparison.InvariantCultureIgnoreCase))
+				{
 					outFile = Path.ChangeExtension(inFile, "txt");
+				}
 				else
+				{
 					outFile = Path.ChangeExtension(inFile, "voc");
+				}
 				Console.WriteLine("Converting {0} to {1}...", inFile, outFile);
 			}
 			else if (args.Length == 2)
@@ -84,7 +88,9 @@ namespace Voc997Creator
 					var offsets = new Int16[count];
 					names = new string[count];
 					for (var i = 0; i < count; i++)
-						offsets[i] = (Int16)(reader.ReadInt16());
+					{
+						offsets[i] = reader.ReadInt16();
+					}
 					for (var i = 0; i < count; i++)
 					{
 						reader.BaseStream.Seek(offsets[i] + 2, SeekOrigin.Begin);
@@ -96,7 +102,6 @@ namespace Voc997Creator
 				using (var writer = new StreamWriter(File.Open(outFile, FileMode.OpenOrCreate)))
 				{
 					var skip = 1;
-					var last = 0;
 					for (var i = 0; i < count; i++)
 					{
 						if (names[i].Contains(' ') || names[i] == "BAD SELECTOR")
@@ -111,7 +116,6 @@ namespace Voc997Creator
 								writer.WriteLine("//{0}", i);
 							}
 							writer.WriteLine(names[i]);
-							last = i;
 						}
 					}
 				}

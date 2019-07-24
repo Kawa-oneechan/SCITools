@@ -40,15 +40,21 @@ namespace SeqMaker
 			}
 
 			var wantToCount = true;
+#if ALLOWGIFS
 			var wasAnimatedGif = false;
+#endif
 			var filename = string.Empty;
 			var outFile = string.Empty;
 			for (var i = 0; i < args.Length; i++)
 			{
 				if (i == 0)
+				{
 					filename = args[i];
+				}
 				if (args[i].Equals("-o") && i < args.Length - 1)
+				{
 					outFile = args[i + 1];
+				}
 			}
 
 			if (!File.Exists(filename))
@@ -66,7 +72,9 @@ namespace SeqMaker
 					Application.Run(new SeqPlay.Player(args));
 				}
 				catch (ObjectDisposedException)
-				{ }
+				{
+					//Only here because Winforms is silly.
+				}
 				return 0;
 			}
 			
@@ -74,7 +82,9 @@ namespace SeqMaker
 			{
 				wantToCount = false;
 				if (string.IsNullOrEmpty(outFile))
+				{
 					outFile = Path.ChangeExtension(filename.RemoveSequence(), ".seq");
+				}
 				frameList = File.ReadAllLines(filename).ToList();
 				foreach (var file in frameList)
 				{
@@ -99,15 +109,19 @@ namespace SeqMaker
 					var dimension = new System.Drawing.Imaging.FrameDimension(maybeAnim.FrameDimensionsList[0]);
 					var frameCount = maybeAnim.GetFrameCount(dimension);
 					if (string.IsNullOrEmpty(outFile))
+					{
 						outFile = Path.ChangeExtension(filename.RemoveSequence(), ".seq");
+					}
 					if (frameCount == 1)
+					{
 						wantToCount = true;
+					}
 					else
 					{
 						Console.WriteLine("Exploding animated gif...");
 						wantToCount = false;
 						wasAnimatedGif = true;
-							var tempFile = Path.Combine(Path.GetTempPath(), "seqmaker-0001.gif");
+						var tempFile = Path.Combine(Path.GetTempPath(), "seqmaker-0001.gif");
 						for (var i = 0; i < frameCount; i++)
 						{
 							maybeAnim.SelectActiveFrame(dimension, i);
@@ -188,7 +202,9 @@ namespace SeqMaker
 							}
 						}
 						if (found)
+						{
 							break;
+						}
 					}
 					found = false;
 					for (frameBottom = 199; frameBottom > frameTop; frameBottom--)
@@ -202,7 +218,9 @@ namespace SeqMaker
 							}
 						}
 						if (found)
+						{
 							break;
+						}
 					}
 					frameBottom++;
 					found = false;
@@ -217,7 +235,9 @@ namespace SeqMaker
 							}
 						}
 						if (found)
+						{
 							break;
+						}
 					}
 					found = false;
 					for (frameRight = 319; frameRight > frameLeft; frameRight--)
@@ -231,7 +251,9 @@ namespace SeqMaker
 							}
 						}
 						if (found)
+						{
 							break;
+						}
 					}
 					frameRight++;
 
@@ -240,8 +262,12 @@ namespace SeqMaker
 
 					if (frameHeight + frameWidth == 0)
 					{
-						frameWidth = frameHeight = frameRight = frameBottom = 1;
-						frameTop = frameLeft = 0;
+						frameWidth = 1;
+						frameHeight = 1;
+						frameRight = 1; 
+						frameBottom = 1;
+						frameTop = 0;
+						frameLeft = 0;
 					}
 
 					var actualF = new byte[frameHeight * frameWidth];

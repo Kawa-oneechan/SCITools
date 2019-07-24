@@ -50,9 +50,6 @@
     <Compile Include="Player.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Player.designer.cs">
-      <DependentUpon>Player.cs</DependentUpon>
-    </Compile>
     <Compile Include="KawaTools.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -6,15 +6,20 @@ using System.IO;
 
 namespace Utf8Message
 {
-	struct Message
+	struct Message : IEquatable<string>
 	{
 		public byte Noun, Verb, Cond, Seq, Talker;
 		public short Offset;
 		public byte refNoun, refVerb, refCond, refSeq;
 		public string Text;
+
+		public bool Equals(string other)
+		{
+			return other.Equals(this.Text);
+		}
 	}
 
-	class Program
+	static class Program
 	{
 		static string[] Nouns = new string[256];
 		static string[] Verbs = new string[256];
@@ -31,9 +36,13 @@ namespace Utf8Message
 			var inFile = args[0];
 			var outFile = (args.Length < 2) ? Path.ChangeExtension(inFile, inFile.EndsWith(".msg", StringComparison.InvariantCultureIgnoreCase) ? ".txt" : ".msg") : args[1];
 			if (inFile.EndsWith(".msg", StringComparison.InvariantCultureIgnoreCase))
+			{
 				Msg2Text(inFile, outFile);
+			}
 			else
+			{
 				Text2Msg(inFile, outFile);
+			}
 		}
 
 		static void Text2Msg(string inFile, string outFile)
@@ -48,16 +57,20 @@ namespace Utf8Message
 			{
 				var line = lines[i];
 				if (line.Length < 3)
+				{
 					continue;
+				}
 				if (line.StartsWith("//"))
+				{
 					continue;
+				}
 				var data = line.Split('\t');
 				var noun = ParseWithSH(data[0], Nouns);
 				var verb = ParseWithSH(data[1], Verbs);
 				var cond = ParseWithSH(data[2], Conds);
 				var seq = byte.Parse(data[3]);
 				var talker = ParseWithSH(data[4], Talkers);
-				var text = data[5];
+				var textBuilder = new StringBuilder(data[5]);
 				var refNoun = (byte)0;
 				var refVerb = (byte)0;
 				var refCond = (byte)0;
@@ -81,14 +94,18 @@ namespace Utf8Message
 							 *
 							 * We replicate this in Msg2Text() for compatibility reasons.
 							 */
-							text = text + "\r\n" + lines[j].Substring(5);
+							textBuilder.Append("\r\n");
+							textBuilder.Append(lines[j].Substring(5));
 							i++;
 							j++;
 						}
 					}
 					catch (IndexOutOfRangeException)
-					{ }
+					{
+						//lol
+					}
 				}
+				var text = textBuilder.ToString();
 				if (text.StartsWith("[REF "))
 				{
 					var reference = text.Substring(5);
@@ -109,7 +126,7 @@ namespace Utf8Message
 						).ToArray()
 					);
 				}
-				messages.Add(new Message()
+				messages.Add(new Message
 				{
 					Noun = noun, Verb = verb, Cond = cond, Seq = seq, Talker = talker, Text = text,
 					refNoun = refNoun, refVerb = refVerb, refCond = refCond, refSeq = 0 //refSeq is *always* zero don't be silly.
@@ -117,7 +134,7 @@ namespace Utf8Message
 			}
 			var msg = new BinaryWriter(File.Open(outFile, FileMode.Create));
 			msg.Write((short)0x8F); //resource
-			msg.Write((int)4210); //version
+			msg.Write(4210); //version
 			msg.Write((short)0); //file length (filled in later)
 			msg.Write((short)42); //last message num
 			msg.Write((short)messages.Count);
@@ -130,7 +147,9 @@ namespace Utf8Message
 				msg.Write((byte)0);
 			}
 			if (utf8)
+			{
 				msg.Write("UTF8".ToCharArray());
+			}
 			msg.Seek(0x0C, SeekOrigin.Begin);
 			foreach (var message in messages)
 			{
@@ -166,13 +185,12 @@ namespace Utf8Message
 			var records = new Message[num];
 			for (var i = 0; i < num; i++)
 			{
-				records[i] = new Message()
+				records[i] = new Message
 				{
 					Noun = msg.ReadByte(), Verb = msg.ReadByte(), Cond = msg.ReadByte(), Seq = msg.ReadByte(),
 					Talker = msg.ReadByte(), Offset = msg.ReadInt16(),
 					refNoun = msg.ReadByte(), refVerb = msg.ReadByte(), refCond = msg.ReadByte(), refSeq = msg.ReadByte(),
 				};
-				//msg.ReadInt32();
 			}
 			for (var i = 0; i < num; i++)
 			{
@@ -219,7 +237,10 @@ namespace Utf8Message
 			while (true)
 			{
 				var i = r.ReadByte();
-				if (i == 0) break;
+				if (i == 0)
+				{
+					break;
+				}
 				bytes.Add(i);
 			}
 			return enc.GetString(bytes.ToArray());
@@ -228,8 +249,12 @@ namespace Utf8Message
 		static byte ParseWithSH(string keyword, string[] list)
 		{
 			for (var i = 0; i < 256; i++)
+			{
 				if (list[i] == keyword)
+				{
 					return (byte)i;
+				}
+			}
 			return 0;
 		}
 
@@ -239,7 +264,7 @@ namespace Utf8Message
 			{
 				if (line.StartsWith(lineStart))
 				{
-					var a = line; //.Substring(10);
+					var a = line;
 					var b = a.Substring(a.IndexOf(' ') + 1);
 					var c = b.Substring(b.IndexOf(' ') + 1);
 					b = b.Substring(0, b.IndexOf(' '));
@@ -252,11 +277,20 @@ namespace Utf8Message
 		static void GetRelevantSH(string basename)
 		{
 			for (var i = 0; i < 256; i++)
-				Nouns[i] = Verbs[i] = Talkers[i] = Conds[i] = i.ToString();
+			{
+				Nouns[i] = i.ToString();
+				Verbs[i] = i.ToString();
+				Talkers[i] = i.ToString();
+				Conds[i] = i.ToString();
+			}
 			if (File.Exists("verbs.sh"))
+			{
 				ParseRelevantSH("verbs.sh", "(define V_", Verbs);
+			}
 			if (File.Exists("talkers.sh"))
+			{
 				ParseRelevantSH("talkers.sh", "(define ", Talkers);
+			}
 			if (File.Exists(basename + ".sh"))
 			{
 				ParseRelevantSH(basename + ".sh", "(define C_", Conds);

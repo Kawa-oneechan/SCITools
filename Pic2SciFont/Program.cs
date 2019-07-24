@@ -16,7 +16,7 @@ namespace Pic2SciFont
 		public string Hex;
 	}
 
-	class Program
+	static class Program
 	{
 		static void Main(string[] args)
 		{
@@ -42,9 +42,13 @@ namespace Pic2SciFont
 			}
 
 			if (inFile.EndsWith(".fon", StringComparison.InvariantCultureIgnoreCase))
+			{
 				Font2Pic(inFile, outFile);
+			}
 			else
+			{
 				Pic2Font(inFile, outFile);
+			}
 		}
 
 		static void Pic2Font(string inFile, string outFile)
@@ -64,8 +68,10 @@ namespace Pic2SciFont
 				{
 					//scan for a cell's top-left
 					var pixel = sheet.GetPixel(left, top).GetBrightness();
-					if (!(pixel == 0 || pixel == 1))
+					if (!((pixel == 0) || (pixel == 1)))
+					{
 						continue;
+					}
 
 					//at this point we're at a cell's top-left corner
 					var thisCellTop = top;
@@ -91,7 +97,9 @@ namespace Pic2SciFont
 
 					//we now have the position and size of the cell.
 					if (thisCellHeight > maxHeight)
+					{
 						maxHeight = thisCellHeight;
+					}
 
 					if (charCount == -1)
 					{
@@ -100,7 +108,7 @@ namespace Pic2SciFont
 						continue;
 					}
 
-					var cellData = new Cell() { Index = charCount, Top = thisCellTop, Left = thisCellLeft, Width = thisCellWidth, Height = thisCellHeight, Offset = -1, Optimized = false };
+					var cellData = new Cell { Index = charCount, Top = thisCellTop, Left = thisCellLeft, Width = thisCellWidth, Height = thisCellHeight, Offset = -1, Optimized = false };
 					var bytes = new List<byte>();
 
 					bytes.Add((byte)thisCellWidth);
@@ -118,7 +126,9 @@ namespace Pic2SciFont
 							for (var j = 8 * i; (j < jEnd) && (j < thisCellWidth); j++, iShift--)
 							{
 								if (sheet.GetPixel(j + thisCellLeft, line + thisCellTop).GetBrightness() == 0)
+								{
 									bOut |= (byte)(1 << iShift);
+								}
 							}
 							bytes.Add(bOut);
 						}
@@ -159,11 +169,15 @@ namespace Pic2SciFont
 			fontFile.Write((short)charCount);
 			fontFile.Write((short)lineHeight);
 			for (var i = 0; i < charCount; i++)
-				fontFile.Write((short)cells[i].Offset);
+			{
+				fontFile.Write(cells[i].Offset);
+			}
 			for (var i = 0; i < charCount; i++)
 			{
 				if (cells[i].Optimized)
+				{
 					continue;
+				}
 				fontFile.Write(cells[i].Data);
 			}
 			fontFile.Flush();
@@ -190,7 +204,7 @@ namespace Pic2SciFont
 			var bigBitmap = new Bitmap(16384, 16384);
 			var g = Graphics.FromImage(bigBitmap);
 			g.Clear(Color.Silver);
-			var extentWidth = 32;
+			var extentWidth = 0;
 			var extentHeight = 32;
 			g.FillRectangle(Brushes.White, 2, 2, 2, lineHeight);
 			g.DrawRectangle(Pens.Gray, 1, 1, 3, lineHeight + 1);
@@ -207,14 +221,18 @@ namespace Pic2SciFont
 				var width = fontFile.ReadByte();
 				var height = fontFile.ReadByte();
 				if (height > maxHeight)
+				{
 					maxHeight = height;
+				}
 				var b = 0;
 				for (var line = 0; line < height; line++)
 				{
 					for (int done = 0; done < width; done++)
 					{
 						if ((done & 7) == 0)
+						{
 							b = fontFile.ReadByte();
+						}
 						bigBitmap.SetPixel(left + done, top + line, ((b & 0x80) == 0x80) ? Color.Black : Color.White);
 						b = (byte)(b << 1);
 					}
@@ -225,7 +243,9 @@ namespace Pic2SciFont
 				if (i % 16 == 15)
 				{
 					if (left > extentWidth)
+					{
 						extentWidth = left + 0;
+					}
 					left = 7;
 					top += maxHeight + 2;
 					maxHeight = 1;

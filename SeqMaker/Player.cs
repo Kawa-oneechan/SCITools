@@ -13,21 +13,22 @@ using Marshal = System.Runtime.InteropServices.Marshal;
 
 namespace SeqPlay
 {
-	public partial class Player : Form
+	public class Player : Form, IDisposable
 	{
-		private BinaryReader fileStream;
-		private byte[] screen;
-		private bool exam;
+		private readonly BinaryReader fileStream;
+		private readonly byte[] screen;
+		private readonly bool exam;
 
-		private int frameCount, curFrame;
-		private string outputFile = null;
+		private readonly int frameCount;
+		private int curFrame;
+		private string outputFile;
 
-		private Bitmap bitmap;
-		private Timer timer;
+		private readonly Bitmap bitmap;
+		private readonly Timer timer;
 
 		public Player(string[] args)
 		{
-			InitializeComponent();
+			//InitializeComponent();
 
 			fileStream = new BinaryReader(File.Open(args[0], FileMode.Open));
 
@@ -38,12 +39,15 @@ namespace SeqPlay
 			this.ClientSize = new Size(320, 200);
 			this.DoubleBuffered = true;
 
-			if (args.Contains("-x"))
-				exam = true;
+			exam = (args.Contains("-x"));
 			if (args.Contains("-a"))
+			{
 				this.ClientSize = new Size(320, 240);
+			}
 			if (args.Contains("-d"))
+			{
 				this.ClientSize = new Size(this.ClientSize.Width * 2, this.ClientSize.Height * 2);
+			}
 			if (args.Contains("-e"))
 			{
 				outputFile = Path.Combine(Path.GetDirectoryName(args[0]), Path.GetFileNameWithoutExtension(args[0]) + "-0001.png");
@@ -52,7 +56,9 @@ namespace SeqPlay
 					if (args[i] == "-e")
 					{
 						if (i + 1 < args.Length)
+						{
 							outputFile = args[i + 1];
+						}
 						break;
 					}
 				}
@@ -68,7 +74,9 @@ namespace SeqPlay
 					return;
 				}
 				if (result == DialogResult.Yes)
+				{
 					outputFile = null;
+				}
 			}
 
 			frameCount = fileStream.ReadUInt16();
@@ -81,7 +89,9 @@ namespace SeqPlay
 			{
 				DecodeNextFrame();
 				if (curFrame >= frameCount)
+				{
 					timer.Stop();
+				}
 			};
 
 			FormClosing += (s, e) =>
@@ -91,7 +101,9 @@ namespace SeqPlay
 			KeyPress += (s, e) =>
 			{
 				if (e.KeyChar == 27)
+				{
 					Close();
+				}
 			};
 
 			timer.Start();
@@ -107,7 +119,9 @@ namespace SeqPlay
 
 			//skip saving first frame, it'd be black.
 			if (curFrame == 0)
+			{
 				return;
+			}
 
 			if (!string.IsNullOrEmpty(outputFile))
 			{
@@ -132,7 +146,9 @@ namespace SeqPlay
 			for (var colorNo = palColorStart; colorNo < palColorStart + palColorCount; colorNo++)
 			{
 				if (palFormat == 0) //kSeqPalVariable
+				{
 					palOffset++;
+				}
 				palette.Entries[colorNo] = Color.FromArgb(paletteData[palOffset++], paletteData[palOffset++], paletteData[palOffset++]);
 			}
 			bitmap.Palette = palette;
@@ -146,7 +162,7 @@ namespace SeqPlay
 			var frameHeight = fileStream.ReadUInt16();
 			var frameLeft = fileStream.ReadUInt16();
 			var frameTop = fileStream.ReadUInt16();
-			var colorKey = fileStream.ReadByte();
+			fileStream.BaseStream.Seek(1, SeekOrigin.Current);
 			var frameType = fileStream.ReadByte();
 			fileStream.BaseStream.Seek(2, SeekOrigin.Current);
 			var frameSize = fileStream.ReadUInt16();
@@ -160,17 +176,33 @@ namespace SeqPlay
 			{
 				Array.Clear(screen, 0, screen.Length);
 				if (frameLeft > 0)
+				{
 					for (var i = frameTop; i < frameTop + frameHeight; i += 2)
+					{
 						screen[(i * 320) + frameLeft - 1] = 255;
+					}
+				}
 				if (frameLeft + frameWidth < 320)
+				{
 					for (var i = frameTop; i < frameTop + frameHeight; i += 2)
-						screen[(i * 320) + (frameLeft + frameWidth) ] = 255;
+					{
+						screen[(i * 320) + (frameLeft + frameWidth)] = 255;
+					}
+				}
 				if (frameTop > 0)
+				{
 					for (var i = frameLeft; i < frameLeft + frameWidth; i += 2)
+					{
 						screen[((frameTop - 1) * 320) + i] = 255;
+					}
+				}
 				if (frameTop + frameHeight < 200)
+				{
 					for (var i = frameLeft; i < frameLeft + frameWidth; i += 2)
+					{
 						screen[((frameTop + frameHeight) * 320) + i] = 255;
+					}
+				}
 			}
 
 			if (frameType == 0) //kSeqFrameFull
@@ -187,14 +219,14 @@ namespace SeqPlay
 			{
 				var buf = new byte[frameSize];
 				fileStream.Read(buf, 0, frameSize);
-				DecodeFrame(buf, rleSize, frameSize - rleSize, frameTop, frameLeft, frameWidth, frameHeight, colorKey);
+				DecodeFrame(buf, rleSize, frameSize - rleSize, frameTop, frameLeft, frameWidth, frameHeight);
 			}
 
 			DrawScreen();
 			curFrame++;
 		}
 
-		private bool DecodeFrame(byte[] rleData, int rleSize, int litSize, int top, int left, int width, int height, int colorKey)
+		private void DecodeFrame(byte[] rleData, int rleSize, int litSize, int top, int left, int width, int height)
 		{
 			var writeRow = top;
 			int writeCol = left;
@@ -265,16 +297,23 @@ namespace SeqPlay
 							break;
 						case 7: //Skip rows
 							if (count == 0)
+							{
 								count = height - writeRow;
+							}
 							writeRow += count;
 							break;
 						default:
 							Console.WriteLine("Unsupported operation {0} encountered.", op >> 3);
-							return false;
+							return;
 					}
 				}
 			}
-			return true;
+			return;
+		}
+
+		void IDisposable.Dispose()
+		{
+			fileStream.Dispose();
 		}
 	}
 }
