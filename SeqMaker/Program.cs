@@ -158,9 +158,7 @@ namespace SeqMaker
 				Console.WriteLine("Found {0} frames, from {1} up to {2}.", frameList.Count, Path.GetFileName(firstFile), Path.GetFileName(lastFile));
 			}
 
-			//var bitmap = new byte[64000];
 			var previous = new byte[64000];
-			//var palette = new byte[768];
 
 			var fileStream = new BinaryWriter(File.Open(outFile, FileMode.Create));
 			fileStream.Write((UInt16)frameList.Count);
