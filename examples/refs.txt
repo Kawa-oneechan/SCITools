@@ -2,7 +2,7 @@
 
 //Most other tools I've seen besides Sierra's own don't handle these. At all.
 //Referenced lines allow you to use the same line multiple times, while only
-//saving it only. Lines that are references are themselves saved as blanks.
+//saving it once. Lines that are references are themselves saved as blanks.
 
 //Reference lines can themselves reference more references, up to five levels
 //deep. References point to entire sequences, not individual parts.
