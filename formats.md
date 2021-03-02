@@ -92,3 +92,72 @@ u8   | width  |
 u8   | height | 
 
 1bpp pixel data follows directly after.
+
+## Messages
+
+### Shared
+
+| Type | Name           | Notes |
+| ---- | -------------- | ----- |
+| u16  | version number |       |
+| u16  | padding        |       |
+
+What follows depends on the version number. Next is as the actual message text.
+
+### Versions up to 2101
+
+| Type | Name               | Notes |
+| ---- | ------------------ | ----- |
+| u16  | number of messages |       |
+
+Then for each message:
+
+| Type | Name               | Notes |
+| ---- | ------------------ | ----- |
+| u8   | noun               |       |
+| u8   | verb               |       |
+| u16  | text pointer       |       |
+
+### Versions up to 3411
+
+| Type | Name               | Notes |
+| ---- | ------------------ | ----- |
+| u16  | padding            |       |
+| u16  | number of messages |       |
+
+Then for each message:
+
+| Type | Name               | Notes |
+| ---- | ------------------ | ----- |
+| u8   | noun               |       |
+| u8   | verb               |       |
+| u8   | condition          |       |
+| u8   | sequence           |       |
+| u8   | talker             |       |
+| u16  | text pointer       |       |
+| u8*3 | padding            |       |
+
+### Version 4000 and higher
+
+| Type | Name               | Notes |
+| ---- | ------------------ | ----- |
+| u16  | pointer to end     | Used for comments by `ME`. |
+| u16  | unused             | Used for bookkeeping by `ME`? |
+| u16  | number of messages |       |
+
+Then for each message:
+
+| Type | Name                | Notes |
+| ---- | ------------------- | ----- |
+| u8   | noun                |       |
+| u8   | verb                |       |
+| u8   | condition           |       |
+| u8   | sequence            |       |
+| u8   | talker              |       |
+| u16  | text pointer        |       |
+| u8   | reference noun      |       |
+| u8   | reference verb      |       |
+| u8   | reference condition |       |
+| u8   | reference sequence  |       |
+
+If the reference fields are set, the text pointer is ignored and the target message's text is returned instead. This also works on audio.
