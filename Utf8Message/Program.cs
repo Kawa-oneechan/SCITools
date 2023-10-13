@@ -293,10 +293,10 @@ namespace Utf8Message
 			{
 				ParseRelevantSH("talkers.sh", "(define ", Talkers);
 			}
-			if (File.Exists(basename + ".sh"))
+			if (File.Exists(basename + ".shm"))
 			{
-				ParseRelevantSH(basename + ".sh", "(define C_", Conds);
-				ParseRelevantSH(basename + ".sh", "(define N_", Nouns);
+				ParseRelevantSH(basename + ".shm", "(define C_", Conds);
+				ParseRelevantSH(basename + ".shm", "(define N_", Nouns);
 			}
 		}
 	}
