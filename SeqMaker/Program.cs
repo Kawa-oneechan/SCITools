@@ -262,7 +262,7 @@ namespace SeqMaker
 					var frameWidth = frameRight - frameLeft;
 					var frameHeight = frameBottom - frameTop;
 
-					if (frameHeight + frameWidth == 0)
+					if (frameHeight <=0 || frameWidth <= 0)
 					{
 						frameWidth = 1;
 						frameHeight = 1;

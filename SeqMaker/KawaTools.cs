@@ -192,15 +192,12 @@ namespace Kawa.Tools
 				throw new FormatException("Input images can only be 320 by 200 pixels in size.");
 			}
 
-			if (palette != null)
+			for (var i = 0; i < victim.Palette.Entries.Length; i++)
 			{
-				for (var i = 0; i < victim.Palette.Entries.Length; i++)
-				{
-					var color = victim.Palette.Entries[i];
-					palette[i * 3 + 0] = color.R;
-					palette[i * 3 + 1] = color.G;
-					palette[i * 3 + 2] = color.B;
-				}
+				var color = victim.Palette.Entries[i];
+				palette[i * 3 + 0] = color.R;
+				palette[i * 3 + 1] = color.G;
+				palette[i * 3 + 2] = color.B;
 			}
 
 			var bitmapData = victim.LockBits(new Rectangle(0, 0, victim.Width, victim.Height), ImageLockMode.ReadOnly, victim.PixelFormat);
